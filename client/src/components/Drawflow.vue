@@ -8,7 +8,7 @@
 
     <el-container class="program">
       <el-button @click="saveProgram">Save Program</el-button>
-      <el-button @click="listPrograms">List Programs</el-button>
+      <el-button @click="handleclickList">List Programs</el-button>
       <el-button type="primary" @click="exportPython"
         >Generate Python Code</el-button
       >
@@ -45,6 +45,28 @@
           @dragover="allowDrop($event)"
         ></div>
       </el-main>
+      <div>
+        <el-drawer v-model="listPrograms" title="List of Programs">
+  <ul>
+    <li
+      class="item"
+      v-for="program in totalPrograms"
+      :key="program.uid"
+    >
+      <div>{{ program.name }}</div>
+      <div>
+          <div>
+            <el-button
+              @click="handleClickDelete(program)"
+              type="danger"
+              >Delete</el-button
+            >
+          </div>
+      </div>
+    </li>
+  </ul>
+        </el-drawer>
+      </div>
     </el-container>
   </el-container>
 
@@ -140,11 +162,41 @@ export default {
     const codePython = ref(false);
     const PythonCode = ref("");
     const currentModule = ref("Home");
+    const listPrograms = ref(false);
     const Vue = { version: 3, h, render };
     const internalInstance = getCurrentInstance();
 
     internalInstance.appContext.app._context.config.globalProperties.$df =
       editor;
+
+    function handleClickDelete (codeDeleted) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          }
+        }).
+        then(() => {
+          fetch("http://localhost:9000/v1/programs", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(codeDeleted),
+          })
+        })
+      }
 
     function exportPython() {
       PythonCode.value = pythonString(editor.value, "Home");
@@ -210,7 +262,10 @@ export default {
         return;
         }   
 
-    function listPrograms () {
+    function handleclickList () {
+      listPrograms.value = true;
+      editor.value.changeModule("Home");
+
 
     }
     const drag = (ev) => {
@@ -356,6 +411,8 @@ export default {
       currentModule,
       returnHomeModule,
       clearProgram,
+      handleclickList,
+      handleClickDelete,
       listPrograms,
     };
   },
@@ -379,6 +436,10 @@ export default {
   align-items: center;
   border-bottom: 1px solid white;
   height: 60px;
+}
+
+.item {
+  color: black;
 }
 .buttons {
   display: flex;
