@@ -11,6 +11,6 @@ VueJs + DrawFlow
 ## Backend
 
 ```sh
-REST API creada por Go/chi y Dgraph
+REST API creada con Go/chi y Dgraph
 ```
 
