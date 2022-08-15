@@ -5,7 +5,6 @@
       <el-button type="primary" @click="clearProgram">Clear</el-button>
     </el-header>
 
-
     <el-container class="program">
       <el-button @click="saveProgram">Save Program</el-button>
       <el-button @click="handleclickList">List Programs</el-button>
@@ -174,137 +173,6 @@ export default {
     internalInstance.appContext.app._context.config.globalProperties.$df =
       editor;
 
-    function obtainProgram (uid) {
-            // Swal.fire(
-      //   'Obtained!',
-      //   'Your file has been obtained.',
-      //   'success')
-        // .then(() => {
-      fetch(`http://localhost:9000/v1/programs/${uid}`)
-      .then((response) => response.json())
-      .then((query) => {
-        if (query.getById.length !== 0) {
-          const programSelected = query.getById[0]
-          const exportCode = programSelected.code
-         console.log(exportCode)
-
-        }
-        // if (query.error_code) {
-        //   Swal.fire('It could not connect to the database.')
-        //   throw new Error("It could not connect to the database.");
-        // }
-          // console.log(query);
-      })
-
-      // .then((queryID) => {
-      //   if (queryID.getById.length != 0) {
-      //     const programSelected = queryID.getById[0]
-      //     const drawflow = JSON.parse(programSelected.code)
-      //     editor.value.import(drawflow) 
-      //   }
-      // })
-    }
-
-    function deleteProgram (codeDeleted) {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-        }).
-        then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire(
-              'Deleted!',
-              'Your file has been deleted.',
-              'success'
-            )
-          }
-        }).
-        then(() => {
-          fetch("http://localhost:9000/v1/programs", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(codeDeleted),
-          })
-        })
-      }
-
-    function exportPython() {
-      PythonCode.value = pythonString(editor.value, "Home");
-      codePython.value = true;
-      editor.value.changeModule("Home");
-    }
-
-    function clearProgram() {
-      editor.value.import({ drawflow: { Home: { data: {} } } });
-    }
-
-    function returnHomeModule() {
-      editor.value.changeModule("Home");
-    }
-    
-    function saveProgram() {
-      const exportprogram = pythonString(editor.value, "Home");
-        const datapayload = {
-          uid: "_:program",
-          name: "",
-          code: exportprogram,
-        };
-         Swal.fire({
-        title: "Name of the Code",
-        input: "text",
-        inputLabel: "Name",
-        showCancelButton: true,
-        inputValidator: (value) => {
-          if (!value) {
-            return "Please, submit a name!";
-          }
-        },
-      }).then(({ value }) => {
-          datapayload.name = value;
-          if (totalPrograms.value.some((program) => program.name === value)) {
-            Swal.fire('The name is already registered!')
-            return;
-          }
-            fetch("http://localhost:9000/v1/programs/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(datapayload),
-          })
-            .then((response) => response.json())
-            .then((query) => {
-              Swal.fire(
-                'Code saved!',
-                '',
-                'success'
-              ),   
-              datapayload.uid = query.uids.program;
-              const newPrograms = totalPrograms.value;
-              newPrograms.push(datapayload);
-              totalPrograms.value = newPrograms;
-            })
-            .catch((err) => {
-              console.log(err);
-              Swal.fire('Program could not be saved.')
-            });
-        });
-        return;
-        }   
-
-    function handleclickList () {
-      listPrograms.value = true;
-      editor.value.changeModule("Home");
-
-
-    }
     const drag = (ev) => {
       if (ev.type === "touchstart") {
         mobile_item_selec = ev.target
@@ -372,6 +240,118 @@ export default {
         "vue"
       );
     }
+
+    function exportPython() {
+      PythonCode.value = pythonString(editor.value, "Home");
+      codePython.value = true;
+      editor.value.changeModule("Home");
+    }
+
+    function clearProgram() {
+      editor.value.import({ drawflow: { Home: { data: {} } } });
+    }
+
+    function returnHomeModule() {
+      editor.value.changeModule("Home");
+    }
+    
+    function saveProgram() {
+      const exportprogram = pythonString(editor.value, "Home");
+        const datapayload = {
+          uid: "_:program",
+          name: "",
+          code: exportprogram,
+        };
+         Swal.fire({
+        title: "Name of the Code",
+        input: "text",
+        inputLabel: "Name",
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (!value) {
+            return "Please, submit a name!";
+          }
+        },
+      }).then(({ value }) => {
+          datapayload.name = value;
+          if (totalPrograms.value.some((program) => program.name === value)) {
+            Swal.fire('The name is already registered!')
+            return;
+          }
+            fetch("http://localhost:9000/v1/programs/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datapayload),
+          })
+            .then((response) => response.json())
+            .then((query) => {
+              Swal.fire(
+                'Code saved!',
+                '',
+                'success'
+              ),   
+              datapayload.uid = query.uids.program;
+              const newPrograms = totalPrograms.value;
+              newPrograms.push(datapayload);
+              totalPrograms.value = newPrograms;
+            })
+            .catch((err) => {
+              console.log(err);
+              Swal.fire('Program could not be saved.')
+            });
+        });
+        return;
+        }
+
+    function handleclickList () {
+      listPrograms.value = true;
+      editor.value.changeModule("Home");
+    }   
+
+    function obtainProgram (uid) {
+      fetch(`http://localhost:9000/v1/programs/${uid}`)
+      .then((response) => response.json())
+      .then((query) => {
+        if (query.getById.length !== 0) {
+          const programSelected = query.getById[0]
+          const exportCode = programSelected.code
+          PythonCode.value = exportCode;
+          codePython.value = true;
+        }
+      })
+    }
+    function deleteProgram (codeDeleted) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+        }).
+        then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          }
+        }).
+        then(() => {
+          fetch("http://localhost:9000/v1/programs", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(codeDeleted),
+          })
+        })
+      }
+    
     onMounted(() => {
       var elements = document.getElementsByClassName("drag-drawflow");
       for (var i = 0; i < elements.length; i++) {
@@ -434,6 +414,7 @@ export default {
         })
         .catch((err) => {});
     });
+
     return {
       exportPython,
       listNodes,

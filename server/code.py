@@ -1,2 +1,2 @@
-print(56)
+print(45)
 

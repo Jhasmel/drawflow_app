@@ -18,7 +18,6 @@ type DiagramsResource struct{}
 
 func (rs DiagramsResource) Routes() chi.Router {
 	r := chi.NewRouter()
-
 	r.Get("/", rs.GetAllPrograms)
 	r.Post("/", rs.AddProgram)
 	r.Post("/runCode", rs.RunCode)
@@ -28,14 +27,12 @@ func (rs DiagramsResource) Routes() chi.Router {
 		r.Use(ProgramCtx)
 		r.Get("/", rs.GetOneProgram)
 	})
-
 	return r
 }
 
 func (rs DiagramsResource) GetAllPrograms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	res, err := database.DgraphClient.GetPrograms(r.Context())
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -45,7 +42,6 @@ func (rs DiagramsResource) GetAllPrograms(w http.ResponseWriter, r *http.Request
 
 func (rs DiagramsResource) GetOneProgram(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("uid").(string)
-
 	w.Header().Set("Content-Type", "application/json")
 	resp, err := database.DgraphClient.GetWithId(id, r.Context())
 	if err != nil {
@@ -58,11 +54,9 @@ func (rs DiagramsResource) GetOneProgram(w http.ResponseWriter, r *http.Request)
 func (rs DiagramsResource) RunCode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	buf := new(bytes.Buffer)
-
 	buf.ReadFrom(r.Body)
 	runCode := buf.String()
 	file, err := os.Create("code.py")
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -70,16 +64,13 @@ func (rs DiagramsResource) RunCode(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintln(file, runCode)
 	file.Close()
-
 	cmd := exec.Command("python", "code.py")
 	out, err := cmd.CombinedOutput()
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Write(out)
-
 }
 
 func (rs DiagramsResource) AddProgram(w http.ResponseWriter, r *http.Request) {
@@ -94,12 +85,10 @@ func (rs DiagramsResource) AddProgram(w http.ResponseWriter, r *http.Request) {
 
 	pb, _ := json.Marshal(add)
 	res, err := database.DgraphClient.Add(pb, r.Context())
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	json, _ := json.Marshal(res)
 	w.Write(json)
 }
@@ -108,7 +97,6 @@ func (rs DiagramsResource) DeleteProgram(w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Content-Type", "application/json")
 	var delete models.Program
 	err := json.NewDecoder(r.Body).Decode(&delete)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

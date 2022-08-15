@@ -29,7 +29,6 @@ const query = `{
 		code,
 	}
 }`
-
 const getById = `query getById($uid: string) {
 	getById(func: uid($uid)) {
 	  uid,
@@ -41,9 +40,7 @@ const getById = `query getById($uid: string) {
 func (resp DgraphDB) GetPrograms(ctx context.Context) (*api.Response, error) {
 	txn := resp.dGraphClient.NewTxn()
 	defer txn.Commit(ctx)
-
 	res, err := txn.Query(ctx, query)
-
 	if err != nil {
 		log.Println(err)
 	}
@@ -53,7 +50,6 @@ func (resp DgraphDB) GetPrograms(ctx context.Context) (*api.Response, error) {
 func (resp DgraphDB) GetWithId(uid string, ctx context.Context) (*api.Response, error) {
 	txn := resp.dGraphClient.NewTxn()
 	defer txn.Commit(ctx)
-
 	res, err := txn.QueryWithVars(ctx, getById, map[string]string{"$uid": uid})
 	if err != nil {
 		log.Println(err)
@@ -64,7 +60,6 @@ func (resp DgraphDB) GetWithId(uid string, ctx context.Context) (*api.Response, 
 func (resp DgraphDB) Add(json []byte, ctx context.Context) (*api.Response, error) {
 	txn := resp.dGraphClient.NewTxn()
 	defer txn.Commit(ctx)
-
 	mutation := &api.Mutation{
 		SetJson: json,
 	}
@@ -76,7 +71,6 @@ func (resp DgraphDB) Add(json []byte, ctx context.Context) (*api.Response, error
 func (resp DgraphDB) Delete(json []byte, ctx context.Context) (*api.Response, error) {
 	txn := resp.dGraphClient.NewTxn()
 	defer txn.Commit(ctx)
-
 	mu := &api.Mutation{
 		DeleteJson: json,
 	}
