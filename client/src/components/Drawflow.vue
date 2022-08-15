@@ -351,7 +351,21 @@ export default {
           })
         })
       }
-    
+      fetch("http://localhost:9000/v1/programs")
+      .then((response) => response.json())
+      .then((query) => {
+        if (query.error_code) {
+          Swal.fire('It could not connect to the database.')
+          throw new Error("It could not connect to the database.");
+        }
+        console.log(query);
+        const tprograms = query.programs;
+        totalPrograms.value = tprograms;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     onMounted(() => {
       var elements = document.getElementsByClassName("drag-drawflow");
       for (var i = 0; i < elements.length; i++) {
@@ -401,18 +415,6 @@ export default {
       editor.value.on("moduleChanged", (name) => {
         currentModule.value = name;
       });
-      fetch("http://localhost:9000/v1/programs")
-        .then((response) => response.json())
-        .then((query) => {
-          if (query.error_code) {
-            Swal.fire('It could not connect to the database.')
-            throw new Error("It could not connect to the database.");
-          }
-          console.log(query);
-          const tprograms = query.programs;
-          totalPrograms.value = tprograms;
-        })
-        .catch((err) => {});
     });
 
     return {

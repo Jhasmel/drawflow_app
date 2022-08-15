@@ -27,7 +27,7 @@ export default defineComponent({
     const From = ref(0);
     const To = ref(0);
 
-    const df =
+    let df =
       getCurrentInstance().appContext.config.globalProperties.$df.value;
 
     onMounted(async () => {
