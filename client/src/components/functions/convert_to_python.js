@@ -117,7 +117,7 @@ function numberPython(node, df) {
   if (isNaN(node.data.result) || node.data.result === null) {
     node.data.result = node.data.codePy = 0;
     df.updateNodeDataFromId(node.id, node.data);
-  }
+  } 
 }
 
 function operationPython(node, df) {
@@ -138,7 +138,7 @@ function operationPython(node, df) {
       expressions.push(currentNode.data.codePy);
     });
   } catch {
-    Swal.fire('Connect it to the NumberNode')
+    Swal.fire('Connect the OperationsN to the NumberN.')
   }
 
   switch (data.method) {
@@ -164,7 +164,7 @@ function operationPython(node, df) {
 function assignPython(node, df) {
   const data = node.data;
   if (!isNaN(data.assign) || data.assign === undefined) {
-    Swal.fire('Cannot pick a number for a varible!')
+    Swal.fire('AssigN is undefined. Please connect to another node and do not assign a number')
     return;
   }
 
@@ -178,7 +178,7 @@ function assignPython(node, df) {
 
     df.updateNodeDataFromId(node.id, data);
   } catch {
-    Swal.fire('Connect to another node')
+    Swal.fire('AssigN is undefined. Please connect to another node and do not assign a number')
   }
 }
 
@@ -238,7 +238,7 @@ function elsePython(node, df) {
     data.codePy =
       `print(${connectedNode.data.codePy}) \n` + `else: print(${node.data.result})\n`;
   } else {
-    Swal.fire('Connect to another to another node')
+    Swal.fire('Please, connect to another to another node')
   }
   df.updateNodeDataFromId(node.id, data);
 }

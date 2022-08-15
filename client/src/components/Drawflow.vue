@@ -61,6 +61,11 @@
               type="danger"
               >Delete</el-button
             >
+                <el-button
+              @click="handleClickObtain(program)"
+              type="success"
+              >Obtain</el-button 
+            >
           </div>
       </div>
     </li>
@@ -169,6 +174,24 @@ export default {
     internalInstance.appContext.app._context.config.globalProperties.$df =
       editor;
 
+    function handleClickObtain () {
+      // Swal.fire(
+      //   'Obtained!',
+      //   'Your file has been obtained.',
+      //   'success')
+      //   .then(() => {
+          fetch('http://localhost:9000/v1/programs/' + "_:program")
+              // .then((response) => response.json())
+              // .then((query) => {
+              //   if (query.GetWithId.length !== 0) {
+              //     const diagramFound = query.GetWithId[0];
+              //     const drawflow = diagramFound.code;
+              //     editor.value.import(drawflow);
+              //   }
+              // }).catch((err) => {
+              //       console.log(err.responseText);
+              // });
+      }
     function handleClickDelete (codeDeleted) {
       Swal.fire({
         title: 'Are you sure?',
@@ -413,6 +436,7 @@ export default {
       clearProgram,
       handleclickList,
       handleClickDelete,
+      handleClickObtain,
       listPrograms,
     };
   },
