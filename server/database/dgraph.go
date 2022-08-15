@@ -30,11 +30,11 @@ const query = `{
 	}
 }`
 
-const getById = `query GetWithId($uid: string) {
-	GetWithId(func: uid($uid)) {
+const getById = `query getById($uid: string) {
+	getById(func: uid($uid)) {
 	  uid,
 	  name,
-	  code,
+	  code
 	}
   }`
 

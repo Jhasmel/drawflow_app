@@ -57,12 +57,12 @@
       <div>
           <div>
             <el-button
-              @click="handleClickDelete(program)"
+              @click="deleteProgram(program)"
               type="danger"
               >Delete</el-button
             >
-                <el-button
-              @click="handleClickObtain(program)"
+            <el-button
+              @click="obtainProgram(program.uid)"
               type="success"
               >Obtain</el-button 
             >
@@ -174,25 +174,38 @@ export default {
     internalInstance.appContext.app._context.config.globalProperties.$df =
       editor;
 
-    function handleClickObtain () {
-      // Swal.fire(
+    function obtainProgram (uid) {
+            // Swal.fire(
       //   'Obtained!',
       //   'Your file has been obtained.',
       //   'success')
-      //   .then(() => {
-          fetch('http://localhost:9000/v1/programs/' + "_:program")
-              // .then((response) => response.json())
-              // .then((query) => {
-              //   if (query.GetWithId.length !== 0) {
-              //     const diagramFound = query.GetWithId[0];
-              //     const drawflow = diagramFound.code;
-              //     editor.value.import(drawflow);
-              //   }
-              // }).catch((err) => {
-              //       console.log(err.responseText);
-              // });
-      }
-    function handleClickDelete (codeDeleted) {
+        // .then(() => {
+      fetch(`http://localhost:9000/v1/programs/${uid}`)
+      .then((response) => response.json())
+      .then((query) => {
+        if (query.getById.length !== 0) {
+          const programSelected = query.getById[0]
+          const exportCode = programSelected.code
+         console.log(exportCode)
+
+        }
+        // if (query.error_code) {
+        //   Swal.fire('It could not connect to the database.')
+        //   throw new Error("It could not connect to the database.");
+        // }
+          // console.log(query);
+      })
+
+      // .then((queryID) => {
+      //   if (queryID.getById.length != 0) {
+      //     const programSelected = queryID.getById[0]
+      //     const drawflow = JSON.parse(programSelected.code)
+      //     editor.value.import(drawflow) 
+      //   }
+      // })
+    }
+
+    function deleteProgram (codeDeleted) {
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -201,7 +214,8 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
+        }).
+        then((result) => {
           if (result.isConfirmed) {
             Swal.fire(
               'Deleted!',
@@ -272,7 +286,7 @@ export default {
                 '',
                 'success'
               ),   
-              datapayload.uid = query.uids.diagram;
+              datapayload.uid = query.uids.program;
               const newPrograms = totalPrograms.value;
               newPrograms.push(datapayload);
               totalPrograms.value = newPrograms;
@@ -435,8 +449,8 @@ export default {
       returnHomeModule,
       clearProgram,
       handleclickList,
-      handleClickDelete,
-      handleClickObtain,
+      deleteProgram,
+      obtainProgram,
       listPrograms,
     };
   },

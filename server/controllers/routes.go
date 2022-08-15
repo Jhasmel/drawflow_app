@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -22,7 +21,6 @@ func (rs DiagramsResource) Routes() chi.Router {
 
 	r.Get("/", rs.GetAllPrograms)
 	r.Post("/", rs.AddProgram)
-	r.Put("/", rs.AddProgram)
 	r.Post("/runCode", rs.RunCode)
 	r.Delete("/", rs.DeleteProgram)
 
@@ -46,8 +44,9 @@ func (rs DiagramsResource) GetAllPrograms(w http.ResponseWriter, r *http.Request
 }
 
 func (rs DiagramsResource) GetOneProgram(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	id := r.Context().Value("uid").(string)
+
+	w.Header().Set("Content-Type", "application/json")
 	resp, err := database.DgraphClient.GetWithId(id, r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -97,7 +96,8 @@ func (rs DiagramsResource) AddProgram(w http.ResponseWriter, r *http.Request) {
 	res, err := database.DgraphClient.Add(pb, r.Context())
 
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	json, _ := json.Marshal(res)
@@ -110,7 +110,8 @@ func (rs DiagramsResource) DeleteProgram(w http.ResponseWriter, r *http.Request)
 	err := json.NewDecoder(r.Body).Decode(&delete)
 
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	pb, _ := json.Marshal(delete)
 	resp, err := database.DgraphClient.Delete(pb, r.Context())
