@@ -12,7 +12,7 @@ import (
 
 	"github.com/drawflow_app/database"
 	"github.com/drawflow_app/models"
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 )
 
 type DiagramsResource struct{}
@@ -26,7 +26,7 @@ func (rs DiagramsResource) Routes() chi.Router {
 	r.Post("/runCode", rs.RunCode)
 	r.Delete("/", rs.DeleteProgram)
 
-	r.Route("/{requestID}", func(r chi.Router) {
+	r.Route("/{uid}", func(r chi.Router) {
 		r.Use(ProgramCtx)
 		r.Get("/", rs.GetOneProgram)
 	})
@@ -49,7 +49,6 @@ func (rs DiagramsResource) GetOneProgram(w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Content-Type", "application/json")
 	id := r.Context().Value("uid").(string)
 	resp, err := database.DgraphClient.GetWithId(id, r.Context())
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -125,13 +124,9 @@ func (rs DiagramsResource) DeleteProgram(w http.ResponseWriter, r *http.Request)
 
 }
 
-type requestID string
-
-const RequestIDKey = requestID("uid")
-
 func ProgramCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), RequestIDKey, chi.URLParam(r, "uid"))
+		ctx := context.WithValue(r.Context(), "uid", chi.URLParam(r, "uid"))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

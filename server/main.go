@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
@@ -32,8 +32,8 @@ func main() {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
-	r.Use(middleware.RequestID)
 	r.Use(middleware.URLFormat)
+	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
 	c := cors.New(cors.Options{
 
