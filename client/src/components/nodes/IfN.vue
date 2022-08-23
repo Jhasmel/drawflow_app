@@ -56,12 +56,12 @@ export default defineComponent({
       conditional.value = dataNode.value.data.conditional;
     });
 
-    function updateSelect() {
+    const updateSelect = () =>{
       dataNode.value.data.conditional = conditional.value;
       df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
     }
 
-    function updateInput() {
+    const updateInput = () => {
       dataNode.value.data.conditionalNumber = parseInt(conditionalNumber.value);
       dataNode.value.data.codePy = `${conditionalNumber.value}`;
 

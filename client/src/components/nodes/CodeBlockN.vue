@@ -33,7 +33,7 @@ export default defineComponent({
         df.addModule(`code-block-${nodeId.value}`);
       }
     });
-    function blockCodeButton() {
+    const blockCodeButton = () => {
       df.changeModule(`code-block-${nodeId.value}`);
     }
 

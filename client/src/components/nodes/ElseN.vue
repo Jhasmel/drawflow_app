@@ -38,7 +38,7 @@ export default defineComponent({
       result.value = dataNode.value.data.result;
     });
 
-    function updateInput () {
+    const updateInput = () => {
       dataNode.value.data.result = parseInt(result.value);
       dataNode.value.data.codePy = `${result.value}`;
 

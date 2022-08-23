@@ -1,3 +1,5 @@
-if 100 >= 1000: print(13) 
-else: print(12)
+for i in range(1,4): 
+ 
+  
+    print(3)
 

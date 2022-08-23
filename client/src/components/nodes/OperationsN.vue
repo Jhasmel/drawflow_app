@@ -48,7 +48,7 @@ export default defineComponent({
       operations.value = dataNode.value.data.method;
     });
 
-    function updateSelect() {
+    const updateSelect = () => {
       dataNode.value.data.method = operations.value;
       df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
     }

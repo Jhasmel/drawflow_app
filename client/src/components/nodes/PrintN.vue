@@ -23,7 +23,7 @@ export default defineComponent({
     const nodeId = ref(0);
     const dataNode = ref({});
 
-    let df = getCurrentInstance().appContext.config.globalProperties.$df.value;
+    const df = getCurrentInstance().appContext.config.globalProperties.$df.value;
 
     onMounted(async () => {
       await nextTick();
