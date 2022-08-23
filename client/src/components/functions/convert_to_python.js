@@ -225,7 +225,7 @@ function conditionalPython(node, df) {
   }
 
   data.result = result;
-  data.codePy = `if ${expressions[0]} ${data.conditional} ${expressions[1]}: \n`;
+  data.codePy = `if ${expressions[0]} ${data.conditional} ${expressions[1]}: print(${node.data.conditionalNumber}) \n`;
   df.updateNodeDataFromId(node.id, data);
 }
 
@@ -236,7 +236,7 @@ function elsePython(node, df) {
     const connectedNode = df.getNodeFromId(connection.node);
 
     data.codePy =
-      `print(${connectedNode.data.codePy}) \n` + `else: print(${node.data.result})\n`;
+      connectedNode.data.codePy + `else: print(${node.data.result})\n`;
   } else {
     Swal.fire('Please, connect to another to another node')
   }

@@ -1,11 +1,11 @@
 <template>
   <div ref="el">
-    <nodeHeader title="Else: print" />
+    <nodeHeader title="Else" />
   </div>
   <el-input
     @change="updateInput"
     v-model="result"
-    placeholder="Pick a number"
+    placeholder="print"
   />
 </template>
 
@@ -30,6 +30,7 @@ export default defineComponent({
     const result = ref(0);
 
     let df = getCurrentInstance().appContext.config.globalProperties.$df.value;
+    
     onMounted(async () => {
       await nextTick();
       nodeId.value = el.value.parentElement.parentElement.id.slice(5);
@@ -37,7 +38,7 @@ export default defineComponent({
       result.value = dataNode.value.data.result;
     });
 
-    const updateInput = () => {
+    function updateInput () {
       dataNode.value.data.result = parseInt(result.value);
       dataNode.value.data.codePy = `${result.value}`;
 
@@ -47,8 +48,8 @@ export default defineComponent({
     return {
       el,
       nodeId,
-      updateInput,
       result,
+      updateInput,
     };
   },
 });
