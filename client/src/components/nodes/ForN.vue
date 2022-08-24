@@ -1,18 +1,21 @@
 <template>
   <div ref="el">
     <nodeHeader title="For" />
-    <div>From <el-input v-model="From" df-From></el-input></div>
-    <div>To <el-input v-model="To" df-To></el-input></div>
+    <el-input 
+    @change="updateInput"
+    v-model="printResult"
+    placeholder="print"
+    />
   </div>
 </template>
 
 <script>
 import {
   defineComponent,
-  ref,
   onMounted,
-  nextTick,
   getCurrentInstance,
+  ref,
+  nextTick,
 } from "vue";
 import nodeHeader from "../NodeHeaderN.vue"
 
@@ -23,25 +26,37 @@ export default defineComponent({
   setup() {
     const el = ref(null);
     const nodeId = ref(0);
+    const printResult = ref(0);
     const dataNode = ref({});
-    const From = ref(0);
-    const To = ref(0);
 
-    let df =
-      getCurrentInstance().appContext.config.globalProperties.$df.value;
+    let df = getCurrentInstance().appContext.config.globalProperties.$df.value;
 
     onMounted(async () => {
       await nextTick();
       nodeId.value = el.value.parentElement.parentElement.id.slice(5);
       dataNode.value = df.getNodeFromId(nodeId.value);
-      From.value = dataNode.value.data.From;
-      To.value = dataNode.value.data.To;
+
+      printResult.value = dataNode.value.data.printResult;
     });
+
+    const updateSelect = () =>{
+      dataNode.value.data.conditional = conditional.value;
+      df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
+    }
+
+    const updateInput = () => {
+      dataNode.value.data.printResult = printResult.value;
+      dataNode.value.data.codePy = `${printResult.value}`;
+
+      df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
+    }
+
     return {
       el,
       nodeId,
-      From,
-      To,
+      printResult,
+      updateSelect,
+      updateInput,
     };
   },
 });

@@ -1,5 +1,1 @@
-for i in range(1,4): 
- 
-  
-    print(3)
-
+if 56 > 9: print(0) else: print(8)

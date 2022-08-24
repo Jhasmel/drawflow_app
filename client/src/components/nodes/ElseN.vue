@@ -39,7 +39,7 @@ export default defineComponent({
     });
 
     const updateInput = () => {
-      dataNode.value.data.result = parseInt(result.value);
+      dataNode.value.data.result = result.value;
       dataNode.value.data.codePy = `${result.value}`;
 
       df.updateNodeDataFromId(nodeId.value, dataNode.value.data);

@@ -1,7 +1,12 @@
 <template>
   <div ref="el">
     <nodeHeader title="codeBlock" />
-    <el-button @click="blockCodeButton">Enter Code</el-button>
+    <el-input 
+    @change="updateInput"
+    v-model="writtenCode"
+    df-writtenCode
+    placeholder="insert code"
+    />
   </div>
 </template>
 
@@ -20,6 +25,7 @@ export default defineComponent({
   setup() {
     const el = ref(null);
     const nodeId = ref(0);
+    const writtenCode = ref("");
     const dataNode = ref({});
 
     let df = getCurrentInstance().appContext.config.globalProperties.$df.value;
@@ -29,18 +35,21 @@ export default defineComponent({
       nodeId.value = el.value.parentElement.parentElement.id.slice(5);
       dataNode.value = df.getNodeFromId(nodeId.value);
 
-      if (df.drawflow.drawflow[`code-block-${nodeId.value}`] === undefined) {
-        df.addModule(`code-block-${nodeId.value}`);
-      }
-    });
-    const blockCodeButton = () => {
-      df.changeModule(`code-block-${nodeId.value}`);
+      writtenCode.value = dataNode.value.data.writtenCode;
+
+      })
+
+    const updateInput = () => {
+      dataNode.value.data.writtenCode = writtenCode.value;
+      dataNode.value.data.codePy = writtenCode.value;
+      df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
     }
 
     return {
       el,
-      blockCodeButton,
+      updateInput,
       nodeId,
+      writtenCode,
     };
   },
 });

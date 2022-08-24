@@ -11,13 +11,6 @@
       <el-button type="primary" @click="exportPython"
         >Generate Python Code</el-button
       >
-      <el-button
-        v-if="currentModule !== 'Home'"
-        type="success"
-        @click="returnHomeModule"
-      >
-        Return Home</el-button
-      >
     </el-container>
 
     <el-container class="container">
@@ -145,7 +138,7 @@ export default {
       {
         name: "For",
         item: "For",
-        input: 0,
+        input: 2,
         output: 1,
       },
       {
@@ -157,7 +150,7 @@ export default {
       {
         name: "codeBlock",
         item: "codeBlock",
-        input: 1,
+        input: 0,
         output: 0,
       },
     ]);
@@ -249,10 +242,6 @@ export default {
 
     function clearProgram() {
       editor.value.import({ drawflow: { Home: { data: {} } } });
-    }
-
-    function returnHomeModule() {
-      editor.value.changeModule("Home");
     }
     
     function saveProgram() {
@@ -429,7 +418,6 @@ export default {
       saveProgram,
       totalPrograms,
       currentModule,
-      returnHomeModule,
       clearProgram,
       handleclickList,
       deleteProgram,

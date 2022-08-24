@@ -41,9 +41,6 @@ export default function convertToPython(df, module, prefix = "") {
     let newCode = "";
     removeConnection(nodesFil, node);
     switch (node.name) {
-      case "codeBlock":
-        newCode = extractCodeBlock(df, node, prefix);
-        break;
       default:
         newCode = prefix + node.data.codePy;
         break;
@@ -52,20 +49,6 @@ export default function convertToPython(df, module, prefix = "") {
     code = newCode + code;
   }
   return code;
-}
-
-function extractCodeBlock(df, element, prefix) {
-  let blockCode = convertToPython(
-    df,
-    `code-block-${element.id}`,
-    prefix + "    "
-  );
-
-  if (blockCode === "") {
-    blockCode = prefix + "    pass\n";
-  }
-
-  return prefix + element.data.codePy + blockCode;
 }
 
 function removeConnection(nodes, selectedNode) {
@@ -244,21 +227,28 @@ function elsePython(node, df) {
 }
 
 function forPython(node, df) {
+  let result = 0;
   const data = node.data;
+  const number = [];
+  const expressions = [];
+  const inputs = node.inputs;
 
-  if (isNaN(parseInt(data.to))) {
-    data.to = 0;
+  try {
+    Object.keys(inputs).forEach((key) => {
+      const input = inputs[key];
+      const connection = input.connections[0];
 
-    Swal.fire('Specify the number')
+      const currentNode = df.getNodeFromId(connection.node);
+
+      number.push(currentNode.data.result);
+      expressions.push(currentNode.data.codePy);
+    });
+  } catch {
+    Swal.fire('It must be connected to the number node')
   }
 
-  if (isNaN(parseInt(data.from))) {
-    data.from = 0;
-    Swal.fire('Specify the number')
-  }
-
-  data.codePy = `for i in range(${data.from},${data.to}): \n`;
-
+  data.result = result;
+  data.codePy = `for i in range (${expressions[0]}, ${expressions[1]}): print(${node.data.printResult}) \n`;
   df.updateNodeDataFromId(node.id, data);
 }
 
@@ -278,23 +268,7 @@ function printPython(node, df) {
 
 function codeBlockPython(node, df) {
   const data = node.data;
-  const value = [];
-  const expressions = [];
 
-  try {
-    Object.keys(node.inputs).forEach((key) => {
-      const nodeConnectedId = node.inputs[key].connections[0].node;
-      const nodeConnected = df.getNodeFromId(nodeConnectedId);
-
-      expressions.push(nodeConnected.data.codePy);
-      value.push(nodeConnected.data.result);
-    });
-  } catch {
-    Swal.fire('Must be connected to a node')
-    return;
-  }
-
-  data.codePy = `${expressions[0]} 
-  \n`;
+  data.codePy = node.data.writtenCode;
   df.updateNodeDataFromId(node.id, data);
 }

@@ -62,7 +62,7 @@ export default defineComponent({
     }
 
     const updateInput = () => {
-      dataNode.value.data.conditionalNumber = parseInt(conditionalNumber.value);
+      dataNode.value.data.conditionalNumber = conditionalNumber.value;
       dataNode.value.data.codePy = `${conditionalNumber.value}`;
 
       df.updateNodeDataFromId(nodeId.value, dataNode.value.data);
