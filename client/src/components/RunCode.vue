@@ -44,9 +44,3 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-.code {
-  white-space: pre-wrap;
-  text-align: justify;
-}
-</style>

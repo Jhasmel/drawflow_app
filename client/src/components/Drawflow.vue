@@ -139,7 +139,7 @@ export default {
         name: "For",
         item: "For",
         input: 2,
-        output: 1,
+        output: 0,
       },
       {
         name: "Print",
@@ -337,7 +337,11 @@ export default {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(codeDeleted),
-          })
+          });
+          const newPrograms = totalPrograms.value
+          totalPrograms.value = newPrograms.filter(
+            (program) => program.uid !== codeDeleted.uid
+          );   
         })
       }
       fetch("http://localhost:9000/v1/programs")
@@ -348,8 +352,8 @@ export default {
           throw new Error("It could not connect to the database.");
         }
         console.log(query);
-        const tprograms = query.programs;
-        totalPrograms.value = tprograms;
+        const allprograms = query.programs;
+        totalPrograms.value = allprograms;
       })
       .catch((err) => {
         console.log(err);
