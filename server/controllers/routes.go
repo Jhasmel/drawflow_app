@@ -32,12 +32,12 @@ func (rs DiagramsResource) Routes() chi.Router {
 
 func (rs DiagramsResource) GetAllPrograms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	res, err := database.DgraphClient.GetPrograms(r.Context())
+	resp, err := database.DgraphClient.GetPrograms(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(res.Json)
+	w.Write(resp.Json)
 }
 
 func (rs DiagramsResource) GetOneProgram(w http.ResponseWriter, r *http.Request) {
@@ -65,12 +65,12 @@ func (rs DiagramsResource) RunCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(file, runCode)
 	file.Close()
 	cmd := exec.Command("python", "code.py")
-	out, err := cmd.CombinedOutput()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(out)
+	w.Write(output)
 }
 
 func (rs DiagramsResource) AddProgram(w http.ResponseWriter, r *http.Request) {
@@ -84,12 +84,12 @@ func (rs DiagramsResource) AddProgram(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pb, _ := json.Marshal(add)
-	res, err := database.DgraphClient.Add(pb, r.Context())
+	resp, err := database.DgraphClient.Add(pb, r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	json, _ := json.Marshal(res)
+	json, _ := json.Marshal(resp)
 	w.Write(json)
 }
 

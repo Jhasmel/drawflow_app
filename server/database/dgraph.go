@@ -71,9 +71,9 @@ func (resp DgraphDB) Add(json []byte, ctx context.Context) (*api.Response, error
 func (resp DgraphDB) Delete(json []byte, ctx context.Context) (*api.Response, error) {
 	txn := resp.dGraphClient.NewTxn()
 	defer txn.Commit(ctx)
-	mu := &api.Mutation{
+	mutation := &api.Mutation{
 		DeleteJson: json,
 	}
-	res, err := txn.Mutate(ctx, mu)
+	res, err := txn.Mutate(ctx, mutation)
 	return res, err
 }
